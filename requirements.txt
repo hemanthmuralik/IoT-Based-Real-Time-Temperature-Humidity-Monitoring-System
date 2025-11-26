@@ -1,0 +1,4 @@
+Adafruit_DHT
+Adafruit-SSD1306
+Pillow
+smbus

@@ -7,10 +7,7 @@
 
 An embedded IoT system that monitors environmental data in real-time using a **Raspberry Pi**, visualizing the output on an **OLED Display**. This project demonstrates the integration of sensor data acquisition, I2C communication protocols, and Python-based embedded programming.
 
-## 🎥 Demo
 
-![Project Output](output.jpg)
-*(Real-time readings displayed on the 128x64 OLED screen)*
 
 ## 📋 Overview
 

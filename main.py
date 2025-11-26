@@ -1,38 +1,55 @@
-import Adafruit_DHT
-import Adafruit_SSD1306
-from PIL import Image, ImageDraw, ImageFont
 import time
+import csv
+from datetime import datetime
+import Adafruit_DHT
+from luma.core.interface.serial import i2c
+from luma.oled.device import ssd1306
+from luma.core.render import canvas
+
+# Sensor setup
+sensor = Adafruit_DHT.DHT11
+pin = 4   # GPIO pin where DHT11 is connected
 
 # OLED setup
-WIDTH = 128
-HEIGHT = 64
-RST = None
+serial = i2c(port=1, address=0x3C)
+device = ssd1306(serial)
 
-display = Adafruit_SSD1306.SSD1306_128_64(rst=RST)
-display.begin()
-display.clear()
-display.display()
+LOG_FILE = "sensor_log.csv"
 
-image = Image.new('1', (WIDTH, HEIGHT))
-draw = ImageDraw.Draw(image)
-font = ImageFont.load_default()
+# Create CSV header if file doesn't exist
+try:
+    with open(LOG_FILE, "x", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(["timestamp", "temperature", "humidity"])
+except FileExistsError:
+    pass
 
-# DHT11 setup
-SENSOR = Adafruit_DHT.DHT11
-GPIO_PIN = 4   # DATA → GPIO4
+
+def log_data(temp, hum):
+    """Append data to CSV file."""
+    with open(LOG_FILE, "a", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow([datetime.now(), temp, hum])
+
 
 while True:
-    humidity, temperature = Adafruit_DHT.read_retry(SENSOR, GPIO_PIN)
+    hum, temp = Adafruit_DHT.read_retry(sensor, pin)
 
-    # Clear screen
-    draw.rectangle((0, 0, WIDTH, HEIGHT), outline=0, fill=0)
+    with canvas(device) as draw:
+        if hum and temp:
+            # Display values
+            draw.text((0, 0), f"T: {temp}°C", fill="white")
+            draw.text((0, 15), f"H: {hum}%", fill="white")
 
-    if humidity is not None and temperature is not None:
-        draw.text((0, 10), f"Temperature: {temperature:.1f} C", font=font, fill=255)
-        draw.text((0, 30), f"Humidity: {humidity:.1f} %", font=font, fill=255)
-    else:
-        draw.text((10, 20), "Sensor Error!", font=font, fill=255)
+            # Log sensor data
+            log_data(temp, hum)
 
-    display.image(image)
-    display.display()
-    time.sleep(1)
+            # High temperature warning
+            if temp > 30:
+                draw.text((0, 35), "WARNING: HIGH TEMP!", fill="white")
+
+        else:
+            draw.text((0, 0), "Sensor Error", fill="white")
+
+    # Read & log every 10 minutes
+    time.sleep(600)

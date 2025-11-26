@@ -1,0 +1,21 @@
+
+---
+wiring_diagram.txt (Text Version)**
+
+```text
+DHT11 Sensor:
+  +------------------+
+  |  VCC -> 5V       |
+  |  DATA -> GPIO 4  |
+  |  GND -> GND      |
+  +------------------+
+
+SSD1306 OLED (I2C):
+  SDA -> SDA1
+  SCL -> SCL1
+  VCC -> 3.3V
+  GND -> GND
+
+LED Alert:
+  LED + -> GPIO 17
+  LED - -> GND

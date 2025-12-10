@@ -1,50 +1,55 @@
-# IoT-Based Real-Time Temperature & Humidity Monitoring System
+# 📡 Edge Environmental Logger & Analytics Node
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Python](https://img.shields.io/badge/Python-3.x-yellow)
-![Platform](https://img.shields.io/badge/Platform-Raspberry%20Pi-red)
-![Hardware](https://img.shields.io/badge/Hardware-DHT11%20%7C%20OLED-green)
+![Platform](https://img.shields.io/badge/Platform-Raspberry%20Pi-red) ![Language](https://img.shields.io/badge/Python-3.x-blue) ![Focus](https://img.shields.io/badge/Focus-Data%20Engineering%20%7C%20Edge%20AI-green) ![License](https://img.shields.io/badge/License-MIT-orange)
 
-An embedded IoT system that monitors environmental data in real-time using a **Raspberry Pi**, visualizing the output on an **OLED Display**. This project demonstrates the integration of sensor data acquisition, I2C communication protocols, and Python-based embedded programming.
-
-
-
-## 📋 Overview
-
-In industrial and agricultural sectors, maintaining specific environmental conditions is critical. This project provides a low-cost, scalable solution for monitoring **Temperature** and **Humidity**. It bridges the gap between raw sensor data and human-readable visualization using the I2C protocol.
-
-**Key Features:**
-* **Real-Time Sensing:** Data acquisition every 2 seconds using the DHT11 sensor.
-* **Visual Interface:** Custom Python driver to render text and graphics on the SSD1306 OLED.
-* **Efficient Communication:** Utilizes the I2C protocol for display management, freeing up GPIO pins.
-* **Robustness:** Includes error handling for sensor timeouts and read failures.
-
-## 🛠️ Tech Stack & Hardware
-
-* **Microcomputer:** Raspberry Pi 3B+ / 4
-* **Sensors:** DHT11 (Temperature & Humidity)
-* **Display:** 0.96" OLED (128x64 pixels)
-* **Communication:** I2C Protocol, GPIO
-* **Language:** Python 3
-
-## ⚙️ Circuit Diagram
-
-| Component | Raspberry Pi Pin | Description |
-| :--- | :--- | :--- |
-| **DHT11 VCC** | 3.3V | Power |
-| **DHT11 Data** | GPIO 4 | Signal |
-| **OLED SDA** | GPIO 2 (SDA) | I2C Data |
-| **OLED SCL** | GPIO 3 (SCL) | I2C Clock |
-
-## 🚀 Future Scope (Edge AI Integration)
-
-This project serves as the data acquisition layer for a larger **"Smart Environment"** system. Future plans include:
-1.  **Anomaly Detection:** Integrating a lightweight **TensorFlow Lite** model to predict equipment overheating based on temperature trends.
-2.  **Cloud Logging:** Pushing data to AWS IoT Core for remote monitoring.
-
-## 🤝 Contributing
-
-Contributions are welcome! Please fork the repo and submit a pull request.
+> A robust, edge-computing node that captures, logs, and analyzes environmental time-series data locally. Designed as a foundational data acquisition layer for Smart Building applications.
 
 ---
-**Author:** [Hemanth Murali K](https://github.com/hemanthmuralik)
+
+## 📖 Overview
+
+The **Edge Environmental Logger** is more than just a monitoring system; it is a complete **Data Acquisition Pipeline**. 
+
+Running on a Raspberry Pi, it interfaces with industrial-grade sensors to capture high-resolution environmental data (Temperature & Humidity). Unlike standard IoT demos, this system implements **persistent data storage (CSV Logging)** and **on-device statistical analysis**, bridging the gap between hardware sensing and AI-ready datasets.
+
+### 🚀 Key Capabilities
+* **Time-Series Data Logging:** Automatically stamps and saves sensor readings to a structured CSV dataset (`sensor_log.csv`) for historical analysis.
+* **Edge Analytics Engine:** Features a dedicated analytics module (`analytics.py`) that computes **Moving Averages** to smooth sensor noise.
+* **Anomaly Detection:** Implements algorithmic logic to flag outlier events (e.g., sudden temperature spikes indicating equipment failure).
+* **Resilient Design:** Includes error handling for sensor timeouts and I2C communication failures.
+
+---
+
+## ⚙️ Technical Architecture
+
+The system follows a modular "Sense-Log-Analyze" architecture:
+
+```mermaid
+graph LR
+    A[DHT11 Sensor] -->|GPIO Signal| B(Raspberry Pi Node)
+    B -->|Real-Time| C[OLED Display]
+    B -->|Time-Series Data| D[(CSV Database)]
+📂 Project Structure
+.
+├── main.py          # Core logic: Sensor reading, OLED rendering, & Data Logging
+├── analytics.py     # AI Module: Moving Average smoothing & Anomaly Detection
+├── requirements.txt # Python dependencies
+├── sensor_log.csv   # The generated dataset (Time-Series)
+└── README.md        # Documentation
+ Data & Analytics DemoThe system generates a structured dataset ready for Machine Learning.1. Raw Data Sample (sensor_log.csv):Code snippetTimestamp,Temperature_C,Humidity_Pct
+2025-12-10 09:00:01, 24.5, 45.2
+2025-12-10 09:00:03, 24.6, 45.1
+2025-12-10 09:00:05, 80.0, 45.0  <-- ANOMALY DETECTED
+2. Analytics Output:Running python3 analytics.py processes the log and generates insights:Plaintext--- DATA ANALYTICS REPORT ---
+Total Readings: 1500
+Average Temp:   24.8 C
+[ALERT] 1 Anomaly Detected (>30.0 C):
+  - Reading #450: 80.0 C (Possible Fire/Sensor Error)
+🛠️ Hardware SetupComponentPin ConnectionProtocolDHT11 SensorGPIO 4One-WireOLED DisplayGPIO 2 (SDA) / GPIO 3 (SCL)I2C🚀 Getting StartedClone the Repository:Bashgit clone [https://github.com/hemanthmuralik/Edge-Environmental-Logger.git](https://github.com/hemanthmuralik/Edge-Environmental-Logger.git)
+cd Edge-Environmental-Logger
+Install Dependencies:Bashpip3 install -r requirements.txt
+Run the Data Logger:Bashpython3 main.py
+The system will start printing live data and saving it to sensor_log.csv.Run Analytics:Bashpython3 analytics.py
+👨‍💻 AuthorHemanth Murali K Electronics Engineer & Aspiring AI Product ManagerLinkedIn | GitHub
+    D -->|Batch Processing| E[Analytics Engine]
+    E -->|Output| F[Statistical Report & Anomalies]

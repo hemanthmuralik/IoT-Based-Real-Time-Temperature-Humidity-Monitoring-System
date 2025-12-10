@@ -1,4 +1,4 @@
 Adafruit_DHT
-Adafruit-SSD1306
-Pillow
-smbus
+RPi.GPIO
+csv
+datetime
